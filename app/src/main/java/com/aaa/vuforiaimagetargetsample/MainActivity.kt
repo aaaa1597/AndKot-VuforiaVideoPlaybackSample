@@ -80,18 +80,8 @@ class MainActivity : AppCompatActivity() {
                                                         }
                                                     }
 
-                val landerbitmap = loadBitmapFromAssets(this@MainActivity, "ModelTargets/VikingLander.jpg")
-                val landerTexture: ByteBuffer? = landerbitmap?.let { bitmap ->
-                                                        ByteBuffer.allocateDirect(bitmap.byteCount).apply {
-                                                            bitmap.copyPixelsToBuffer(this)
-                                                            rewind()
-                                                        }
-                                                    }
-                if (astronautTexture != null && landerTexture != null) {
-                    setTextures(
-                        astronautbitmap.width, astronautbitmap.height, astronautTexture,
-                        landerbitmap.width, landerbitmap.height, landerTexture
-                    )
+                if (astronautTexture != null) {
+                    setTextures(astronautbitmap.width, astronautbitmap.height, astronautTexture)
                 } else {
                     Log.e("VuforiaSample", "Failed to load astronaut or lander texture")
                 }

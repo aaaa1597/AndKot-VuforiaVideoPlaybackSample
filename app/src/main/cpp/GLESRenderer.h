@@ -32,7 +32,6 @@ public:
     void deinit();
 
     void setAstronautTexture(int width, int height, unsigned char* bytes);
-    void setLanderTexture(int width, int height, unsigned char* bytes);
 
     /// Render the video background
     void renderVideoBackground(const VuMatrix44F& projectionMatrix, const float* vertices, const float* textureCoordinates,
@@ -43,13 +42,6 @@ public:
 
     /// Render a bounding box augmentation on an Image Target
     void renderImageTarget(VuMatrix44F& projectionMatrix, VuMatrix44F& modelViewMatrix, VuMatrix44F& scaledModelViewMatrix);
-
-    /// Render a bounding cube augmentation on a Model Target
-    void renderModelTarget(VuMatrix44F& projectionMatrix, VuMatrix44F& modelViewMatrix, VuMatrix44F& scaledModelViewMatrix);
-
-    /// Render the Guide View for a Model Target
-    void renderModelTargetGuideView(VuMatrix44F& projectionMatrix, VuMatrix44F& modelViewMatrix, const VuImageInfo& Image,
-                                    VuBool guideViewImageHasChanged);
 
 private: // methods
     /// Attempt to create a texture from bytes
@@ -124,12 +116,6 @@ private: // data members
     std::vector<float> mAstronautVertices;
     std::vector<float> mAstronautTexCoords;
     GLuint mAstronautTextureUnit = -1;
-
-    // For rendering the Lander, loaded from the obj file
-    int mLanderVertexCount;
-    std::vector<float> mLanderVertices;
-    std::vector<float> mLanderTexCoords;
-    GLuint mLanderTextureUnit = -1;
 };
 
 #endif //_VUFORIA_GLESRENDERER_H_

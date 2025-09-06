@@ -250,16 +250,11 @@ JNIEXPORT void JNICALL
 Java_com_aaa_vuforiaimagetargetsample_VuforiaWrapperKt_setTextures(JNIEnv *env, jclass clazz,
                                                                               jint astronautWidth,
                                                                               jint astronautHeight,
-                                                                              jobject astronautByteBuffer,
-                                                                              jint landerWidth,
-                                                                              jint landerHeight,
-                                                                              jobject landerByteBuffer) {
+                                                                              jobject astronautByteBuffer) {
     // Textures are loaded using the BitmapFactory which isn't available from the NDK.
     // They are loaded in the Kotlin code and passed to this method to create GLES textures.
     auto astronautBytes = static_cast<unsigned char*>(env->GetDirectBufferAddress(astronautByteBuffer));
     gWrapperData.renderer.setAstronautTexture(astronautWidth, astronautHeight, astronautBytes);
-    auto landerBytes = static_cast<unsigned char*>(env->GetDirectBufferAddress(landerByteBuffer));
-    gWrapperData.renderer.setLanderTexture(landerWidth, landerHeight, landerBytes);
 }
 
 
@@ -320,16 +315,6 @@ Java_com_aaa_vuforiaimagetargetsample_VuforiaWrapperKt_renderFrame(JNIEnv *env, 
         if (controller.getImageTargetResult(trackableProjection, trackableModelView, trackableModelViewScaled))
         {
             gWrapperData.renderer.renderImageTarget(trackableProjection, trackableModelView, trackableModelViewScaled);
-        }
-        else if (controller.getModelTargetResult(trackableProjection, trackableModelView, trackableModelViewScaled))
-        {
-            gWrapperData.renderer.renderModelTarget(trackableProjection, trackableModelView, trackableModelViewScaled);
-        }
-        else if (controller.getModelTargetGuideView(trackableProjection, trackableModelView, modelTargetGuideViewImage,
-                                                    guideViewImageHasChanged))
-        {
-            gWrapperData.renderer.renderModelTargetGuideView(trackableProjection, trackableModelView, modelTargetGuideViewImage,
-                                                             guideViewImageHasChanged);
         }
 
         if (gWrapperData.usingARCore)
