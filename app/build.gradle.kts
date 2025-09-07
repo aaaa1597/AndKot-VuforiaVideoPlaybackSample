@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.aaa.vuforiavideoplayback"
+    namespace = "com.aaa.vuforiavideoplaybacksample"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.aaa.vuforiavideoplayback"
+        applicationId = "com.aaa.vuforiavideoplaybacksample"
         minSdk = 33
         targetSdk = 36
         versionCode = 1

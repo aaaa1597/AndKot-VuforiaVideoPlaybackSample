@@ -22,7 +22,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.aaa.vuforiavideoplayback.databinding.ActivityMainBinding
+import com.aaa.vuforiavideoplaybacksample.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -64,10 +64,10 @@ class MainActivity : AppCompatActivity() {
         _binding.viwGlsurface.setEGLConfigChooser(8,8,8,8,0,0)
         _binding.viwGlsurface.setZOrderOnTop(true)
         _binding.viwGlsurface.setRenderer(object : GLSurfaceView.Renderer {
-            override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
+            override fun onSurfaceCreated(gl: GL10, config: EGLConfig) {
                 initRendering()
             }
-            override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
+            override fun onSurfaceChanged(gl: GL10, width: Int, height: Int) {
                 // Store values for later use
                 mWidth = width
                 mHeight = height
@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity() {
                 // Update flag to tell us we need to update Vuforia configuration
                 mSurfaceChanged = true
             }
-            override fun onDrawFrame(gl: GL10?) {
+            override fun onDrawFrame(gl: GL10) {
                 if (mVuforiaStarted) {
 
                     if (mSurfaceChanged || mWindowDisplayRotation != this@MainActivity.display.rotation) {
@@ -253,9 +253,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        // Used to load the 'vuforiaimagetargetsample' library on application startup.
+        // Used to load the 'vuforiavideoplaybacksample' library on application startup.
         init {
-            System.loadLibrary("vuforiaimagetargetsample")
+            System.loadLibrary("vuforiavideoplaybacksample")
         }
     }
 }

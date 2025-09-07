@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22.1)
 
-project("vuforiaimagetargetsample")
+project("vuforiavideoplaybacksample")
 
 add_library(VUFORIA_LIBRARY SHARED IMPORTED)
 set_target_properties(VUFORIA_LIBRARY PROPERTIES IMPORTED_LOCATION
@@ -14,7 +14,7 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         GLESUtils.cpp
         VuforiaWrapper.cpp)
 
-target_include_directories(vuforiaimagetargetsample PUBLIC include)
+target_include_directories(vuforiavideoplaybacksample PUBLIC include)
 
 target_link_libraries(${CMAKE_PROJECT_NAME}
         android
