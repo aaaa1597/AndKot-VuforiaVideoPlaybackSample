@@ -1,4 +1,4 @@
-package com.aaa.vuforiaimagetargetsample
+package com.aaa.vuforiavideoplaybacksample
 
 import android.Manifest
 import android.content.Context
@@ -22,13 +22,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.aaa.vuforiaimagetargetsample.databinding.ActivityMainBinding
+import com.aaa.vuforiavideoplayback.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.nio.ByteBuffer
 import java.util.Timer
+import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import kotlin.concurrent.schedule
 
@@ -63,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         _binding.viwGlsurface.setEGLConfigChooser(8,8,8,8,0,0)
         _binding.viwGlsurface.setZOrderOnTop(true)
         _binding.viwGlsurface.setRenderer(object : GLSurfaceView.Renderer {
-            override fun onSurfaceCreated(gl: GL10?, config: javax.microedition.khronos.egl.EGLConfig?) {
+            override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
                 initRendering()
             }
             override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {

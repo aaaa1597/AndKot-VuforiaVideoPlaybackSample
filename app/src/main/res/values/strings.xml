@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">VuforiaImageTargetSample</string>
+    <string name="app_name">VuforiaVideoPlaybackSample</string>
     <string name="splash_screen_description">Splash screen</string>
     <string name="splash_screen_logo">Vuforia Logo</string>
     <string name="main_image_target_label">Image Target</string>

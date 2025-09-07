@@ -1,4 +1,4 @@
-package com.aaa.vuforiaimagetargetsample
+package com.aaa.vuforiavideoplaybacksample
 
 import org.junit.Test
 

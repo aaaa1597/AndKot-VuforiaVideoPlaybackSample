@@ -1,4 +1,4 @@
-package com.aaa.vuforiaimagetargetsample
+package com.aaa.vuforiavideoplaybacksample
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
