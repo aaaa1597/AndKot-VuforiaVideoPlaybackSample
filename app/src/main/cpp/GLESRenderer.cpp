@@ -19,11 +19,11 @@ bool
 GLESRenderer::init(AAssetManager* assetManager)
 {
     /* Setup for Video PlayBack rendering */
-    g_program = GLESUtils::createProgramFromBuffer(VERTEX_SHADER, FRAGMENT_SHADER);
-    g_aPositionLoc = glGetAttribLocation(g_program, "a_Position");
-    g_aTexCoordLoc = glGetAttribLocation(g_program, "a_TexCoord");
-    g_uProjectionMatrixLoc = glGetUniformLocation(g_program, "u_ProjectionMatrix");
-    g_sTextureLoc = glGetUniformLocation(g_program, "s_Texture");
+    _vProgram = GLESUtils::createProgramFromBuffer(VERTEX_SHADER, FRAGMENT_SHADER);
+    _vaPosition = glGetAttribLocation(_vProgram, "a_Position");
+    _vaTexCoordLoc = glGetAttribLocation(_vProgram, "a_TexCoord");
+    _vuProjectionMatrixLoc = glGetUniformLocation(_vProgram, "u_ProjectionMatrix");
+    _vuSamplerOES = glGetUniformLocation(_vProgram, "s_Texture");
 
     // Setup for Video Background rendering
     mVbShaderProgramID = GLESUtils::createProgramFromBuffer(textureVertexShaderSrc, textureFragmentShaderSrc);
@@ -159,11 +159,11 @@ GLESRenderer::renderVideoPlayback(VuMatrix44F& projectionMatrix, VuMatrix44F& mo
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glUseProgram(g_program);
+    glUseProgram(_vProgram);
 
     /* Calculation of vertex coordinates considering the aspect ratio. */
-    float viewAspect = g_viewWidth / g_viewHeight;
-    float videoAspect = g_videoWidth / g_videoHeight;
+    float viewAspect = _vViewWidth / _vViewHeight;
+    float videoAspect = _vVideoWidth / _vVideoHeight;
 
     float scaleX = 0.5f;
     float scaleY = 0.5f;
@@ -188,21 +188,21 @@ GLESRenderer::renderVideoPlayback(VuMatrix44F& projectionMatrix, VuMatrix44F& mo
         1.0f, 0.0f  /* 右上 */
     };
 
-    glVertexAttribPointer(g_aPositionLoc, 3, GL_FLOAT, GL_FALSE, 0, vertices);
-    glVertexAttribPointer(g_aTexCoordLoc, 2, GL_FLOAT, GL_FALSE, 0, texCoords);
-    glEnableVertexAttribArray(g_aPositionLoc);
-    glEnableVertexAttribArray(g_aTexCoordLoc);
+    glVertexAttribPointer(_vaPosition, 3, GL_FLOAT, GL_FALSE, 0, vertices);
+    glVertexAttribPointer(_vaTexCoordLoc, 2, GL_FLOAT, GL_FALSE, 0, texCoords);
+    glEnableVertexAttribArray(_vaPosition);
+    glEnableVertexAttribArray(_vaTexCoordLoc);
 
-    glUniformMatrix4fv(g_uProjectionMatrixLoc, 1, GL_FALSE, &scaledModelViewProjectionMatrix.data[0]);
+    glUniformMatrix4fv(_vuProjectionMatrixLoc, 1, GL_FALSE, &scaledModelViewProjectionMatrix.data[0]);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_EXTERNAL_OES, g_textureId);
-    glUniform1i(g_sTextureLoc, 0);
+    glBindTexture(GL_TEXTURE_EXTERNAL_OES, _vTextureId);
+    glUniform1i(_vuSamplerOES, 0);
 
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-    glDisableVertexAttribArray(g_aPositionLoc);
-    glDisableVertexAttribArray(g_aTexCoordLoc);
+    glDisableVertexAttribArray(_vaPosition);
+    glDisableVertexAttribArray(_vaTexCoordLoc);
     glBindTexture(GL_TEXTURE_EXTERNAL_OES, 0);
     glUseProgram(0);
 }

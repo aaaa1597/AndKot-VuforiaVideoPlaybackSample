@@ -87,18 +87,18 @@ private: // methods
 
 public:
     /* Screen size and video size */
-    float g_viewWidth = 0.0f;
-    float g_viewHeight = 0.0f;
-    float g_videoWidth = 0.0f;
-    float g_videoHeight = 0.0f;
+    float _vViewWidth = 0.0f;
+    float _vViewHeight = 0.0f;
+    float _vVideoWidth = 0.0f;
+    float _vVideoHeight = 0.0f;
 
     /* For video playback rendering */
-    GLuint g_textureId = 0;
-    GLuint g_program = 0;
-    GLint g_aPositionLoc = -1;
-    GLint g_aTexCoordLoc = -1;
-    GLint g_uProjectionMatrixLoc = -1;
-    GLint g_sTextureLoc = -1;
+    GLuint _vTextureId = 0;
+    GLuint _vProgram = 0;
+    GLint _vaPosition = -1;
+    GLint _vaTexCoordLoc = -1;
+    GLint _vuProjectionMatrixLoc = -1;
+    GLint _vuSamplerOES = -1;
 
 private: // data members
     // For video background rendering
