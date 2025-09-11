@@ -18,6 +18,12 @@ countries.
 bool
 GLESRenderer::init(AAssetManager* assetManager)
 {
+    /* Setup for Video PlayBack rendering */
+    g_program = GLESUtils::createProgramFromBuffer(VERTEX_SHADER, FRAGMENT_SHADER);
+    g_aPositionLoc = glGetAttribLocation(g_program, "a_Position");
+    g_aTexCoordLoc = glGetAttribLocation(g_program, "a_TexCoord");
+    g_sTextureLoc = glGetUniformLocation(g_program, "s_Texture");
+
     // Setup for Video Background rendering
     mVbShaderProgramID = GLESUtils::createProgramFromBuffer(textureVertexShaderSrc, textureFragmentShaderSrc);
     mVbVertexPositionHandle = glGetAttribLocation(mVbShaderProgramID, "vertexPosition");
@@ -144,6 +150,59 @@ GLESRenderer::renderWorldOrigin(VuMatrix44F& projectionMatrix, VuMatrix44F& mode
     renderCube(projectionMatrix, modelViewMatrix, 0.015f, cubeColor);
 }
 
+void
+GLESRenderer::renderVideoPlayback(VuMatrix44F& projectionMatrix, VuMatrix44F& modelViewMatrix, VuMatrix44F& scaledModelViewMatrix) {
+    VuMatrix44F scaledModelViewProjectionMatrix = vuMatrix44FMultiplyMatrix(projectionMatrix, scaledModelViewMatrix);
+
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glUseProgram(g_program);
+
+    /* Calculation of vertex coordinates considering the aspect ratio. */
+    float viewAspect = g_viewWidth / g_viewHeight;
+    float videoAspect = g_videoWidth / g_videoHeight;
+
+    float scaleX = 1.0f;
+    float scaleY = 1.0f;
+
+    if(viewAspect > videoAspect) {  /* When the view is wider than the video. */
+        scaleX = videoAspect / viewAspect;
+    } else {    /* When the view is taller than the video or has the same aspect ratio. */
+        scaleY = viewAspect / videoAspect;
+    }
+
+    GLfloat vertices[] = {
+        -scaleX, -scaleY, 0.0f, /* 左下 */
+         scaleX, -scaleY, 0.0f, /* 右下 */
+        -scaleX,  scaleY, 0.0f, /* 左上 */
+         scaleX, scaleY, 0.0f  /* 右上 */
+    };
+
+    GLfloat texCoords[] = {
+        0.0f, 1.0f, /* 左下 */
+        1.0f, 1.0f, /* 右下 */
+        0.0f, 0.0f, /* 左上 */
+        1.0f, 0.0f  /* 右上 */
+    };
+
+    glVertexAttribPointer(g_aPositionLoc, 3, GL_FLOAT, GL_FALSE, 0, vertices);
+    glVertexAttribPointer(g_aTexCoordLoc, 2, GL_FLOAT, GL_FALSE, 0, texCoords);
+    glEnableVertexAttribArray(g_aPositionLoc);
+    glEnableVertexAttribArray(g_aTexCoordLoc);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_EXTERNAL_OES, g_textureId);
+    glUniform1i(g_sTextureLoc, 0);
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+    glDisableVertexAttribArray(g_aPositionLoc);
+    glDisableVertexAttribArray(g_aTexCoordLoc);
+    glBindTexture(GL_TEXTURE_EXTERNAL_OES, 0);
+    glUseProgram(0);
+}
 
 void
 GLESRenderer::renderImageTarget(VuMatrix44F& projectionMatrix, VuMatrix44F& modelViewMatrix, VuMatrix44F& scaledModelViewMatrix)

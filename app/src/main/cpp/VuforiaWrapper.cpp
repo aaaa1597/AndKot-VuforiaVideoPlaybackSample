@@ -237,7 +237,7 @@ Java_com_aaa_vuforiavideoplaybacksample_VuforiaWrapperKt_cameraRestoreAutoFocus(
 JNIEXPORT void JNICALL
 Java_com_aaa_vuforiavideoplaybacksample_VuforiaWrapperKt_initRendering(JNIEnv *env, jclass clazz) {
     // Define clear color
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
     if (!gWrapperData.renderer.init(gWrapperData.assetManager))
     {
@@ -295,6 +295,8 @@ Java_com_aaa_vuforiavideoplaybacksample_VuforiaWrapperKt_renderFrame(JNIEnv *env
     {
         // Set viewport for current view
         glViewport(viewport[0], viewport[1], viewport[2], viewport[3]);
+        __android_log_print(ANDROID_LOG_DEBUG, "aaaaa", "viewport(%f, %f, %f, %f)", viewport[0], viewport[1], viewport[2], viewport[3]);
+
 
         auto renderState = controller.getRenderState();
         gWrapperData.renderer.renderVideoBackground(renderState.vbProjectionMatrix, renderState.vbMesh->pos, renderState.vbMesh->tex,
@@ -314,6 +316,7 @@ Java_com_aaa_vuforiavideoplaybacksample_VuforiaWrapperKt_renderFrame(JNIEnv *env
         VuBool guideViewImageHasChanged;
         if (controller.getImageTargetResult(trackableProjection, trackableModelView, trackableModelViewScaled))
         {
+            gWrapperData.renderer.renderVideoPlayback(trackableProjection, trackableModelView, trackableModelViewScaled);
             gWrapperData.renderer.renderImageTarget(trackableProjection, trackableModelView, trackableModelViewScaled);
         }
 
@@ -433,3 +436,36 @@ accessFusionProviderPointers()
 #ifdef __cplusplus
 }
 #endif
+
+extern "C"
+JNIEXPORT jint JNICALL
+Java_com_aaa_vuforiavideoplaybacksample_VuforiaWrapperKt_initVideoTexture(JNIEnv *env, jclass clazz) {
+    gWrapperData.renderer.g_textureId = -1;
+    glGenTextures(1, &gWrapperData.renderer.g_textureId);
+    glBindTexture(GL_TEXTURE_EXTERNAL_OES, gWrapperData.renderer.g_textureId);
+    glTexParameteri(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glBindTexture(GL_TEXTURE_EXTERNAL_OES, 0);
+    return static_cast<jint>(gWrapperData.renderer.g_textureId);
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_aaa_vuforiavideoplaybacksample_VuforiaWrapperKt_nativeOnSurfaceChanged(JNIEnv *env,
+                                                                                jclass clazz,
+                                                                                jint width,
+                                                                                jint height) {
+    gWrapperData.renderer.g_viewWidth = static_cast<float>(width);
+    gWrapperData.renderer.g_viewHeight= static_cast<float>(height);
+    glViewport(0, 0, width, height);
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_aaa_vuforiavideoplaybacksample_VuforiaWrapperKt_nativeSetVideoSize(JNIEnv *env,
+                                                                            jclass clazz,
+                                                                            jint width,
+                                                                            jint height) {
+    gWrapperData.renderer.g_videoWidth = static_cast<float>(width);
+    gWrapperData.renderer.g_videoHeight= static_cast<float>(height);
+}

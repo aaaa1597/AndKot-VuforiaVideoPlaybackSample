@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.PixelFormat
+import android.graphics.SurfaceTexture
 import android.opengl.GLSurfaceView
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -22,7 +23,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.common.VideoSize
+import androidx.media3.exoplayer.ExoPlayer
 import com.aaa.vuforiavideoplaybacksample.databinding.ActivityMainBinding
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -46,6 +52,9 @@ class MainActivity : AppCompatActivity() {
     private var mWidth = 0
     private var mHeight = 0
     private var mPermissionsRequested = false;
+    private var surfaceTexture: SurfaceTexture? = null
+    private var exoPlayer: ExoPlayer? = null
+    private var isFrameAvailable = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,11 +96,24 @@ class MainActivity : AppCompatActivity() {
                     Log.e("VuforiaSample", "Failed to load astronaut or lander texture")
                 }
 
+                val textureId = initVideoTexture()
+                if (textureId < 0)
+                    throw RuntimeException("Failed to create native texture")
+                surfaceTexture = SurfaceTexture(textureId)
+                CoroutineScope(Dispatchers.Main).launch {
+                    initExoPlayer(this@MainActivity)
+                }
+
+                nativeOnSurfaceChanged(width, height)
+
                 // Update flag to tell us we need to update Vuforia configuration
                 mSurfaceChanged = true
             }
+
             override fun onDrawFrame(gl: GL10) {
                 if (mVuforiaStarted) {
+
+                    surfaceTexture?.updateTexImage()
 
                     if (mSurfaceChanged || mWindowDisplayRotation != this@MainActivity.display.rotation) {
                         mSurfaceChanged = false
@@ -149,6 +171,31 @@ class MainActivity : AppCompatActivity() {
             stopAR()
             mVuforiaStarted = false
             deinitAR()
+        }
+    }
+
+    private fun initExoPlayer(context: Context) {
+        exoPlayer = ExoPlayer.Builder(context).build().apply {
+            val surface = Surface(surfaceTexture)
+            setVideoSurface(surface)
+
+            /* Specify the video file located in res/raw. */
+            val uri = "android.resource://${context.packageName}/${R.raw.vuforiasizzlereel}"
+            Log.d("aaaaa", "uri=$uri")
+            val mediaItem = MediaItem.fromUri(uri)
+            setMediaItem(mediaItem)
+
+            repeatMode = Player.REPEAT_MODE_ONE /* Loop Playback. */
+            playWhenReady = true /* Start playback immediately. */
+
+            addListener(object : Player.Listener {
+                override fun onVideoSizeChanged(videoSize: VideoSize) {
+                    /* Pass the video size to the C++ side. */
+                    nativeSetVideoSize(videoSize.width, videoSize.height)
+                }
+            })
+
+            prepare()
         }
     }
 

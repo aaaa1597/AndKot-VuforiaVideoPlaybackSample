@@ -40,6 +40,9 @@ public:
     /// Render augmentation for the world origin
     void renderWorldOrigin(VuMatrix44F& projectionMatrix, VuMatrix44F& modelViewMatrix);
 
+    /* Render a bounding box augmentation on an Video PlayBack */
+    void renderVideoPlayback(VuMatrix44F& projectionMatrix, VuMatrix44F& modelViewMatrix, VuMatrix44F& scaledModelViewMatrix);
+
     /// Render a bounding box augmentation on an Image Target
     void renderImageTarget(VuMatrix44F& projectionMatrix, VuMatrix44F& modelViewMatrix, VuMatrix44F& scaledModelViewMatrix);
 
@@ -81,6 +84,20 @@ private: // methods
      * vectors are populated by this method as it reads the input.
      */
     bool loadObjModel(const std::vector<char>& data, int& numVertices, std::vector<float>& vertices, std::vector<float>& texCoords);
+
+public:
+    /* Screen size and video size */
+    float g_viewWidth = 0.0f;
+    float g_viewHeight = 0.0f;
+    float g_videoWidth = 0.0f;
+    float g_videoHeight = 0.0f;
+
+    /* For video playback rendering */
+    GLuint g_textureId = 0;
+    GLuint g_program = 0;
+    GLint g_aPositionLoc = -1;
+    GLint g_aTexCoordLoc = -1;
+    GLint g_sTextureLoc = -1;
 
 private: // data members
     // For video background rendering

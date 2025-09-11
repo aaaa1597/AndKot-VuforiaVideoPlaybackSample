@@ -15,3 +15,6 @@ external fun startAR() : Boolean
 external fun stopAR()
 external fun cameraPerformAutoFocus()
 external fun cameraRestoreAutoFocus()
+external fun initVideoTexture(): Int
+external fun nativeOnSurfaceChanged(width: Int, height: Int)
+external fun nativeSetVideoSize(width: Int, height: Int)
