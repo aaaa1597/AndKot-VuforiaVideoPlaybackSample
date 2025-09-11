@@ -97,6 +97,7 @@ public:
     GLuint g_program = 0;
     GLint g_aPositionLoc = -1;
     GLint g_aTexCoordLoc = -1;
+    GLint g_uProjectionMatrixLoc = -1;
     GLint g_sTextureLoc = -1;
 
 private: // data members

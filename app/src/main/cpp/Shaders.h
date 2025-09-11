@@ -14,9 +14,10 @@ countries.
 static const char* VERTEX_SHADER =
         "attribute vec4 a_Position;\n"
         "attribute vec2 a_TexCoord;\n"
+        "uniform mat4 u_ProjectionMatrix;\n"
         "varying vec2 v_TexCoord;\n"
         "void main() {\n"
-        "  gl_Position = a_Position;\n"
+        "  gl_Position = u_ProjectionMatrix * a_Position;\n"
         "  v_TexCoord = a_TexCoord;\n"
         "}\n";
 

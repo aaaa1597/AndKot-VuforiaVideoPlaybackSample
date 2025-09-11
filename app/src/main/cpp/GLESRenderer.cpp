@@ -22,6 +22,7 @@ GLESRenderer::init(AAssetManager* assetManager)
     g_program = GLESUtils::createProgramFromBuffer(VERTEX_SHADER, FRAGMENT_SHADER);
     g_aPositionLoc = glGetAttribLocation(g_program, "a_Position");
     g_aTexCoordLoc = glGetAttribLocation(g_program, "a_TexCoord");
+    g_uProjectionMatrixLoc = glGetUniformLocation(g_program, "u_ProjectionMatrix");
     g_sTextureLoc = glGetUniformLocation(g_program, "s_Texture");
 
     // Setup for Video Background rendering
@@ -164,8 +165,8 @@ GLESRenderer::renderVideoPlayback(VuMatrix44F& projectionMatrix, VuMatrix44F& mo
     float viewAspect = g_viewWidth / g_viewHeight;
     float videoAspect = g_videoWidth / g_videoHeight;
 
-    float scaleX = 1.0f;
-    float scaleY = 1.0f;
+    float scaleX = 0.5f;
+    float scaleY = 0.5f;
 
     if(viewAspect > videoAspect) {  /* When the view is wider than the video. */
         scaleX = videoAspect / viewAspect;
@@ -191,6 +192,8 @@ GLESRenderer::renderVideoPlayback(VuMatrix44F& projectionMatrix, VuMatrix44F& mo
     glVertexAttribPointer(g_aTexCoordLoc, 2, GL_FLOAT, GL_FALSE, 0, texCoords);
     glEnableVertexAttribArray(g_aPositionLoc);
     glEnableVertexAttribArray(g_aTexCoordLoc);
+
+    glUniformMatrix4fv(g_uProjectionMatrixLoc, 1, GL_FALSE, &scaledModelViewProjectionMatrix.data[0]);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_EXTERNAL_OES, g_textureId);
