@@ -25,9 +25,9 @@ static const char* FRAGMENT_SHADER =
         "#extension GL_OES_EGL_image_external : require\n"
         "precision mediump float;\n"
         "varying vec2 v_TexCoord;\n"
-        "uniform samplerExternalOES s_Texture;\n"
+        "uniform samplerExternalOES u_SamplerOES;\n"
         "void main() {\n"
-        "  gl_FragColor = texture2D(s_Texture, v_TexCoord);\n"
+        "  gl_FragColor = texture2D(u_SamplerOES, v_TexCoord);\n"
         "}\n";
 
 /////////////////////////////////////////////////////////////////////////////////////////

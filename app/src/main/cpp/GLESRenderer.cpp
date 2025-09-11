@@ -23,7 +23,7 @@ GLESRenderer::init(AAssetManager* assetManager)
     _vaPosition = glGetAttribLocation(_vProgram, "a_Position");
     _vaTexCoordLoc = glGetAttribLocation(_vProgram, "a_TexCoord");
     _vuProjectionMatrixLoc = glGetUniformLocation(_vProgram, "u_ProjectionMatrix");
-    _vuSamplerOES = glGetUniformLocation(_vProgram, "s_Texture");
+    _vuSamplerOES = glGetUniformLocation(_vProgram, "u_SamplerOES");
 
     // Setup for Video Background rendering
     mVbShaderProgramID = GLESUtils::createProgramFromBuffer(textureVertexShaderSrc, textureFragmentShaderSrc);
