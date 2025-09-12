@@ -41,7 +41,7 @@ public:
     void renderWorldOrigin(VuMatrix44F& projectionMatrix, VuMatrix44F& modelViewMatrix);
 
     /* Render a bounding box augmentation on an Video PlayBack */
-    void renderVideoPlayback(VuMatrix44F& projectionMatrix, VuMatrix44F& modelViewMatrix, VuMatrix44F& scaledModelViewMatrix);
+    void renderVideoPlayback(VuMatrix44F& projectionMatrix, VuMatrix44F& modelViewMatrix, VuMatrix44F& scaledModelViewMatrix, const VuVector2F &markerSize);
 
     /// Render a bounding box augmentation on an Image Target
     void renderImageTarget(VuMatrix44F& projectionMatrix, VuMatrix44F& modelViewMatrix, VuMatrix44F& scaledModelViewMatrix);
@@ -87,8 +87,6 @@ private: // methods
 
 public:
     /* Screen size and video size */
-    float _vViewWidth = 0.0f;
-    float _vViewHeight = 0.0f;
     float _vVideoWidth = 0.0f;
     float _vVideoHeight = 0.0f;
 

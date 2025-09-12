@@ -295,8 +295,7 @@ Java_com_aaa_vuforiavideoplaybacksample_VuforiaWrapperKt_renderFrame(JNIEnv *env
     {
         // Set viewport for current view
         glViewport(viewport[0], viewport[1], viewport[2], viewport[3]);
-        __android_log_print(ANDROID_LOG_DEBUG, "aaaaa", "viewport(%f, %f, %f, %f)", viewport[0], viewport[1], viewport[2], viewport[3]);
-
+//        __android_log_print(ANDROID_LOG_DEBUG, "aaaaa", "viewport(%f, %f, %f, %f)", viewport[0], viewport[1], viewport[2], viewport[3]);
 
         auto renderState = controller.getRenderState();
         gWrapperData.renderer.renderVideoBackground(renderState.vbProjectionMatrix, renderState.vbMesh->pos, renderState.vbMesh->tex,
@@ -314,9 +313,10 @@ Java_com_aaa_vuforiavideoplaybacksample_VuforiaWrapperKt_renderFrame(JNIEnv *env
         VuMatrix44F trackableModelViewScaled;
         VuImageInfo modelTargetGuideViewImage;
         VuBool guideViewImageHasChanged;
-        if (controller.getImageTargetResult(trackableProjection, trackableModelView, trackableModelViewScaled))
+        VuVector2F markerSize;
+        if (controller.getImageTargetResult(trackableProjection, trackableModelView, trackableModelViewScaled, markerSize))
         {
-            gWrapperData.renderer.renderVideoPlayback(trackableProjection, trackableModelView, trackableModelViewScaled);
+            gWrapperData.renderer.renderVideoPlayback(trackableProjection, trackableModelView, trackableModelViewScaled, markerSize);
             gWrapperData.renderer.renderImageTarget(trackableProjection, trackableModelView, trackableModelViewScaled);
         }
 
@@ -456,8 +456,6 @@ Java_com_aaa_vuforiavideoplaybacksample_VuforiaWrapperKt_nativeOnSurfaceChanged(
                                                                                 jclass clazz,
                                                                                 jint width,
                                                                                 jint height) {
-    gWrapperData.renderer._vViewWidth = static_cast<float>(width);
-    gWrapperData.renderer._vViewHeight= static_cast<float>(height);
     glViewport(0, 0, width, height);
 }
 extern "C"

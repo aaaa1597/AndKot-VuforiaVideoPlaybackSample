@@ -99,7 +99,7 @@ public:
 
     /// Get rendering information for the Image Target.
     /// Returns false if Vuforia isn't currently tracking the Image Target.
-    bool getImageTargetResult(VuMatrix44F& projectionMatrix, VuMatrix44F& modelViewMatrix, VuMatrix44F& scaledModelViewMatrix);
+    bool getImageTargetResult(VuMatrix44F& projectionMatrix, VuMatrix44F& modelViewMatrix, VuMatrix44F& scaledModelViewMatrix, VuVector2F& markerSize);
 
     /// Get the PlatformController handle.
     /// The result is only valid after initAR is called and before deinitAR is called.

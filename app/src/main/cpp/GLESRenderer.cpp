@@ -152,7 +152,7 @@ GLESRenderer::renderWorldOrigin(VuMatrix44F& projectionMatrix, VuMatrix44F& mode
 }
 
 void
-GLESRenderer::renderVideoPlayback(VuMatrix44F& projectionMatrix, VuMatrix44F& modelViewMatrix, VuMatrix44F& scaledModelViewMatrix) {
+GLESRenderer::renderVideoPlayback(VuMatrix44F& projectionMatrix, VuMatrix44F& modelViewMatrix, VuMatrix44F& scaledModelViewMatrix, const VuVector2F &markerSize) {
     VuMatrix44F scaledModelViewProjectionMatrix = vuMatrix44FMultiplyMatrix(projectionMatrix, scaledModelViewMatrix);
 
     glEnable(GL_DEPTH_TEST);
@@ -162,17 +162,17 @@ GLESRenderer::renderVideoPlayback(VuMatrix44F& projectionMatrix, VuMatrix44F& mo
     glUseProgram(_vProgram);
 
     /* Calculation of vertex coordinates considering the aspect ratio. */
-    float viewAspect = _vViewWidth / _vViewHeight;
+    float markerAspect = markerSize.data[0] / markerSize.data[1];
     float videoAspect = _vVideoWidth / _vVideoHeight;
 
     float scaleX = 0.5f;
     float scaleY = 0.5f;
 
-    if(viewAspect > videoAspect) {  /* When the view is wider than the video. */
-        scaleX = videoAspect / viewAspect;
-    } else {    /* When the view is taller than the video or has the same aspect ratio. */
-        scaleY = viewAspect / videoAspect;
-    }
+    if(markerAspect > videoAspect)  /* When the marker is wider than the video. */
+        scaleX = scaleX * (videoAspect / markerAspect);
+    else    /* When the marker is taller than the video or has the same aspect ratio. */
+        scaleY = scaleY * (markerAspect / videoAspect);
+
 
     GLfloat vertices[] = {
         -scaleX, -scaleY, 0.0f, /* 左下 */

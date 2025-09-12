@@ -383,7 +383,7 @@ AppController::getOrigin(VuMatrix44F& projectionMatrix, VuMatrix44F& modelViewMa
 
 
 bool
-AppController::getImageTargetResult(VuMatrix44F& projectionMatrix, VuMatrix44F& modelViewMatrix, VuMatrix44F& scaledModelViewMatrix)
+AppController::getImageTargetResult(VuMatrix44F& projectionMatrix, VuMatrix44F& modelViewMatrix, VuMatrix44F& scaledModelViewMatrix, VuVector2F& markerSize)
 {
     bool result = false;
 
@@ -422,6 +422,9 @@ AppController::getImageTargetResult(VuMatrix44F& projectionMatrix, VuMatrix44F& 
 
             if (poseInfo.poseStatus != VU_OBSERVATION_POSE_STATUS_NO_POSE)
             {
+                markerSize.data[0] = imageTargetInfo.size.data[0];
+                markerSize.data[1] = imageTargetInfo.size.data[1];
+
                 projectionMatrix = mCurrentRenderState.projectionMatrix;
 
                 // Compute model-view matrix
