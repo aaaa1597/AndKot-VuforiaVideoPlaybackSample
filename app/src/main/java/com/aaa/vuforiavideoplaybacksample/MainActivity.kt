@@ -54,7 +54,6 @@ class MainActivity : AppCompatActivity() {
     private var mPermissionsRequested = false;
     private var surfaceTexture: SurfaceTexture? = null
     private var exoPlayer: ExoPlayer? = null
-    private var isFrameAvailable = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,9 +98,10 @@ class MainActivity : AppCompatActivity() {
                 val textureId = initVideoTexture()
                 if (textureId < 0)
                     throw RuntimeException("Failed to create native texture")
-                surfaceTexture = SurfaceTexture(textureId)
                 CoroutineScope(Dispatchers.Main).launch {
-                    initExoPlayer(this@MainActivity)
+                    surfaceTexture = SurfaceTexture(textureId)
+                    val surface = Surface(surfaceTexture)
+                    exoPlayer?.setVideoSurface(surface)
                 }
 
                 nativeOnSurfaceChanged(width, height)
@@ -172,15 +172,10 @@ class MainActivity : AppCompatActivity() {
             mVuforiaStarted = false
             deinitAR()
         }
-    }
 
-    private fun initExoPlayer(context: Context) {
-        exoPlayer = ExoPlayer.Builder(context).build().apply {
-            val surface = Surface(surfaceTexture)
-            setVideoSurface(surface)
-
+        exoPlayer = ExoPlayer.Builder(this).build().apply {
             /* Specify the video file located in res/raw. */
-            val uri = "android.resource://${context.packageName}/${R.raw.vuforiasizzlereel}"
+            val uri = "android.resource://${this@MainActivity.packageName}/${R.raw.vuforiasizzlereel}"
             Log.d("aaaaa", "uri=$uri")
             val mediaItem = MediaItem.fromUri(uri)
             setMediaItem(mediaItem)
@@ -239,6 +234,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        exoPlayer?.release()
+        exoPlayer = null
         // Hide the GLView while we clean up
         _binding.viwGlsurface.visibility = View.INVISIBLE
         // Stop Vuforia Engine and call parent to navigate back
